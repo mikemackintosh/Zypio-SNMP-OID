@@ -10,20 +10,6 @@
  * Requires >= PHP5.4
  *
  ****************************************************/
-#!<PATH_TO_PHP_INTERPRETER>
-
-/**
- * NOTE: Replace #!<PATH_TO_PHP_INTERPRETER> with your systems PHP binary
- * Ex:
- * #!/usr/bin/php
- *     or
- * #!/usr/local/php5.5/bin/php
- */
-
-// Log Request
-/*
-file_put_contents("/var/log/zypiosnmp.log", "Conneciton Received\n", FILE_APPEND);
-//*/
 
 /**
  * 
@@ -47,6 +33,10 @@ class ZypioSNMP{
 	 * @param [type] $oid [description]
 	 */
 	public function __construct( $oid ){
+
+		if(strpos($oid, ".") !== 0){
+			$oid = ".{$oid}";
+		}
 
 		$this->oid = $oid;
 

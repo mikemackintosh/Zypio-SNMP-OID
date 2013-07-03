@@ -1,6 +1,7 @@
 
-ZypioSNMP - An extension of SNMP OID's using PHP
+ZypioSNMP
 ================================================
+An extension of SNMP OID's using PHP
 
 # Description
 
@@ -19,15 +20,21 @@ To use the script, navigate to your desired source, most commonly `/usr/local` a
 
 This will create the directory `/usr/local/zypiosnmp/`.
 
-### Step 2: Update your `snmpd.conf` file
+### Step 2: Chmod the example
+
+For SNMPD to call your file, it needs to be executable:
+
+    sudo chmod +x /usr/local/zypiosnmp/example.php
+
+### Step 3: Update your `snmpd.conf` file
 
 Add the following statement to your `snmpd.conf` file, most likely located in `/etc/snmp/`:
 
-    pass -p 1 .1.3.6.1.4.1.38741  /usr/local/zypiosnmp/
+	pass .1.3.6.1.4.1.38741 /usr/local/zypiosnmp/example.php
 
 **Note**: Depending on your security levels and community configuration, you may need to add a view for your OID:
 
-    view   systemonly  included   .1.3.6.1.4.1.38741
+	view   all  included   .1.3.6.1.4.1.38741
 
 # Usage
 

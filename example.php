@@ -12,7 +12,8 @@
  *
  ****************************************************/
 
-require_once("./ZypioSNMP.php");
+require_once( __DIR__ . "/ZypioSNMP.php");
+
 
 /**
  * NOTE: Replace #!<PATH_TO_PHP_INTERPRETER> with your systems PHP binary
@@ -22,6 +23,11 @@ require_once("./ZypioSNMP.php");
  * #!/usr/local/php5.5/bin/php
  */
 
+// Log Request
+/*
+file_put_contents("/var/log/zypiosnmp.log", "Conneciton Received\n", FILE_APPEND);
+//*/
+
 
 // Instantiate Class using Base OID
 // -- this base OID must match what you  
@@ -30,11 +36,11 @@ $snmp = new ZypioSNMP(".1.3.6.1.4.1.38741");
 
 // The below syntax adds to the base .1.3.6.1.4.1.38741
 ///*
-$snmp->addOid(".0", ZypioSNMP::STRING, "ZypioPHP"); // .1.3.6.1.4.1.38741.0
-$snmp->addOid(".1", ZypioSNMP::STRING, 1); // .1.3.6.1.4.1.38741.1
+$snmp->addOid(".1.0", ZypioSNMP::STRING, "ZypioPHP"); // .1.3.6.1.4.1.38741.1.0
+$snmp->addOid(".1.1", ZypioSNMP::INTEGER, 1); // .1.3.6.1.4.1.38741.1.1
 $snmp->addOid(".1.1.4.0.9.8.8.0", ZypioSNMP::STRING, "This is nice and long"); // .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.0
-$snmp->addOid(".8.1.8.0", ZypioSNMP::STRING, "That's what she said"); // .1.3.6.1.4.1.38741.8.1.8.0
-$snmp->addOid(".22.1.8.0", ZypioSNMP::IPADDR, "10.211.53.3"); // .1.3.6.1.4.1.38741.22.1.8.0
+$snmp->addOid(".8.1.8.0", ZypioSNMP::STRING, "Here is another string"); // .1.3.6.1.4.1.38741.8.1.8.0
+$snmp->addOid(".7.1.3.0", ZypioSNMP::IPADDR, "10.211.53.3"); // .1.3.6.1.4.1.38741.22.1.8.0
 //*/
 
 // This checks for a GET/GETNEXT or SET
