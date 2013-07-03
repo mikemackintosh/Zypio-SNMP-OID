@@ -24,7 +24,7 @@ This will create the directory `/usr/local/zypiosnmp/`.
 
 For SNMPD to call your file, it needs to be executable:
 
-    sudo chmod +x /usr/local/zypiosnmp/example.php
+    sudo chmod 0777 /usr/local/zypiosnmp/example.php
 
 ### Step 3: Update your `snmpd.conf` file
 
@@ -41,6 +41,15 @@ Add the following statement to your `snmpd.conf` file, most likely located in `/
 Look at `example.php` for an example as to how to use ZypioSNMP.
 
 **Note:** It is important that you update the interpreter line to match your systems configuration. This should point to your systems PHP binary.
+
+# Example
+
+    snmpwalk -On -v 2c -c public dev.ve.zyp.io .1.3.6.1.4.1.38741
+    .1.3.6.1.4.1.38741.1.0 = STRING: "ZypioPHP"
+    .1.3.6.1.4.1.38741.1.1 = INTEGER: 1
+    .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.0 = STRING: "This is nice and long"
+    .1.3.6.1.4.1.38741.7.1.3.0 = IpAddress: 10.211.53.3
+    .1.3.6.1.4.1.38741.8.1.8.0 = STRING: "Here is another string"
 
 # Performance
 
