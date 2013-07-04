@@ -5,7 +5,7 @@
  *             using SNMP's pass functionality
  * Author Mike Mackintosh < m@zyp.io >
  * Date 20130703
- * Version 0.5
+ * Version 1.0
  *
  * Requires >= PHP5.4
  *
@@ -66,12 +66,15 @@ class ZypioSNMP{
 	 */
 	public function getOid( $requested_oid ){
 
+		/*
 		file_put_contents("/usr/share/nginx/www/log", "Getting $requested_oid\n", FILE_APPEND);
-
+		//*/
+		
 		preg_match("`{$this->oid}(.*)`", $requested_oid , $matches);
 
+		/*
 		file_put_contents("/usr/share/nginx/www/log", "\t$matches[1]\n", FILE_APPEND);
-
+		//*/
 
 		foreach( $this->tree as $oid => $v ) {
 			if( $requested_oid < "{$this->oid}{$oid}" ){
@@ -86,6 +89,7 @@ class ZypioSNMP{
 			}
 		}
 
+		// Per RFC, if there is nothing left, respond with NONE
 		echo "NONE".PHP_EOL;
 		exit(0);
 

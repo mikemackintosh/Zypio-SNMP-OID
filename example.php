@@ -6,7 +6,7 @@
  *             using SNMP's pass functionality
  * Author Mike Mackintosh < m@zyp.io >
  * Date 20130703
- * Version 0.5
+ * Version 1.0
  *
  * Requires >= PHP5.4
  *
@@ -41,6 +41,7 @@ $snmp->addOid(".1.1", ZypioSNMP::INTEGER, 1); // .1.3.6.1.4.1.38741.1.1
 $snmp->addOid(".1.1.4.0.9.8.8.0", ZypioSNMP::STRING, "This is nice and long"); // .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.0
 $snmp->addOid(".8.1.8.0", ZypioSNMP::STRING, "Here is another string"); // .1.3.6.1.4.1.38741.8.1.8.0
 $snmp->addOid(".7.1.3.0", ZypioSNMP::IPADDR, "10.211.53.3"); // .1.3.6.1.4.1.38741.22.1.8.0
+$snmp->addOid(".9.0", ZypioSNMP::GUAGE, rand(0,100)); // .1.3.6.1.4.1.38741.22.1.8.0
 //*/
 
 // This checks for a GET/GETNEXT or SET
