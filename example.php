@@ -6,7 +6,7 @@
  *             using SNMP's pass functionality
  * Author Mike Mackintosh < m@zyp.io >
  * Date 20130703
- * Version 1.0
+ * Version 1.1
  *
  * Requires >= PHP5.4
  *
@@ -39,19 +39,13 @@ $snmp = new ZypioSNMP(".1.3.6.1.4.1.38741");
 $snmp->addOid(".1.0", ZypioSNMP::STRING, "ZypioPHP"); // .1.3.6.1.4.1.38741.1.0
 $snmp->addOid(".1.1", ZypioSNMP::INTEGER, 1); // .1.3.6.1.4.1.38741.1.1
 $snmp->addOid(".1.1.4.0.9.8.8.0", ZypioSNMP::STRING, "This is nice and long"); // .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.0
-$snmp->addOid(".8.1.8.0", ZypioSNMP::STRING, "Here is another string"); // .1.3.6.1.4.1.38741.8.1.8.0
+$snmp->addOid(".1.1.4.0.9.8.8.1", ZypioSNMP::STRING, "This is nice and long, with a continuance"); // .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.0
 $snmp->addOid(".7.1.3.0", ZypioSNMP::IPADDR, "10.211.53.3"); // .1.3.6.1.4.1.38741.22.1.8.0
+$snmp->addOid(".8.1.8.0", ZypioSNMP::STRING, "Here is another string"); // .1.3.6.1.4.1.38741.8.1.8.0
 $snmp->addOid(".9.0", ZypioSNMP::GUAGE, rand(0,100)); // .1.3.6.1.4.1.38741.22.1.8.0
+$snmp->addOid(".32.0", ZypioSNMP::STRING, "unix timestamp"); // .1.3.6.1.4.1.38741.22.1.8.0
+$snmp->addOid(".32.1", ZypioSNMP::COUNTER, time()); // .1.3.6.1.4.1.38741.22.1.8.0
 //*/
 
-// This checks for a GET/GETNEXT or SET
-// NOTE: Only GET/GETNEXT is support ATM
-if( $_SERVER['argv'][1] == "-n" ){
-
-	/*
-	file_put_contents("/var/log/zypiosnmp.log", "Requesting an OID with -n --{$_SERVER['argv'][2]}\n", FILE_APPEND);
-	//*/
-
-	$snmp->getOid( $_SERVER['argv'][2] );
-
-}
+// Respond
+$snmp->respond();
