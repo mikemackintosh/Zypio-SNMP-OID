@@ -48,12 +48,18 @@ Look at `example.php` for an example as to how to use ZypioSNMP.
     .1.3.6.1.4.1.38741.1.0 = STRING: "ZypioPHP"
     .1.3.6.1.4.1.38741.1.1 = INTEGER: 1
     .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.0 = STRING: "This is nice and long"
-    .1.3.6.1.4.1.38741.7.1.3.0 = IpAddress: 10.211.53.3
-    .1.3.6.1.4.1.38741.8.1.8.0 = STRING: "Here is another string"
+    .1.3.6.1.4.1.38741.1.1.4.0.9.8.8.1 = STRING: "This is nice and long, with a continuance"
+    .1.3.6.1.4.1.38741.6.1.3.0 = IpAddress: 10.211.53.3
+    .1.3.6.1.4.1.38741.7.1.8.0 = STRING: "Here is another string"
+    .1.3.6.1.4.1.38741.8.2 = Gauge32: 33
+    .1.3.6.1.4.1.38741.9.2.0 = STRING: "unix timestamp"
+    .1.3.6.1.4.1.38741.9.2.1 = Counter32: 1373305480
+    .1.3.6.1.4.1.38741.9.2.3 = STRING: "0.69646500 1373305480"
+    .1.3.6.1.4.1.38741.25.99.99.99.99.99.99.99.1 = STRING: "This is 25.99.99...."
 
 # Performance
 
-The nature of the `pass` command in `snmpd.conf` means that the script is run on every request. You may use `pass_persist` to cache the response and save some system resources.   
+The nature of the `pass` command in `snmpd.conf` is to execute the script on every request. You may use `pass_persist`, which executes and caches the response and save some system resources.   
 
 # Troubleshooting
 

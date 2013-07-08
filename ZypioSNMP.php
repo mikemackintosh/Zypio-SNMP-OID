@@ -5,7 +5,7 @@
  *             using SNMP's pass functionality
  * Author Mike Mackintosh < m@zyp.io >
  * Date 20130708
- * Version 1.2
+ * Version 1.3
  *
  * Requires >= PHP5.4
  *
@@ -74,7 +74,7 @@ class ZypioSNMP{
 		//*/
 		
 		// Get remainder
-		preg_match("`{$this->oid}(.*)`", $requested_oid , $matches);
+		//preg_match("`{$this->oid}(.*)`", $requested_oid , $matches);
 
 		/*
 		file_put_contents("/usr/share/nginx/www/log", "\t$matches[1]\n", FILE_APPEND);
@@ -86,7 +86,9 @@ class ZypioSNMP{
 		$this->tree = array_merge($tree, $this->tree);
 
 		// 
-		$local_oids = array_reverse($tree);
+		$local_oids = $tree;
+		$last = array_shift($local_oids);
+		array_unshift($local_oids, $last);
 
 		// Loop Through now
 		for($i=0;$i<sizeof($local_oids);$i++){
@@ -95,41 +97,28 @@ class ZypioSNMP{
 			echo "Looking for OID: $local_oids[$i]\n";
 			//*/
 
+			// If no sub-oid was provided, return the first
 			if( $requested_oid == $this->oid ){
 				
-				$end = end($local_oids);
-
-				echo "{$this->oid}{$end}".PHP_EOL;
-				echo $this->tree[ $end ]['type'] .PHP_EOL;
-				echo $this->tree[ $end ]['value'] .PHP_EOL;
+				echo "{$this->oid}{$last}".PHP_EOL;
+				echo $this->tree[ $last ]['type'] .PHP_EOL;
+				echo $this->tree[ $last ]['value'] .PHP_EOL;
 				exit(0);
 
 			}
-			else if( version_compare( $requested_oid, $this->oid . $local_oids[$i], ">=")) {
-
-				/*
-				echo "$requested_oid is greater than or equal to ". $this->oid . $local_oids[$i]."\n";
-				echo "We should return ". $this->oid . $local_oids[$i-1]."\n";
-				//*/
-
-				if( array_key_exists( $i-1 , $local_oids )){
-
-					echo "{$this->oid}{$local_oids[$i-1]}".PHP_EOL;
-					echo $this->tree[ $local_oids[$i-1] ]['type'] .PHP_EOL;
-					echo $this->tree[ $local_oids[$i-1] ]['value'] .PHP_EOL;
-						
-				}
-				else{
-					echo "NONE".PHP_EOL;
-				}
-
+			else if( version_compare( $requested_oid, $this->oid . $local_oids[$i], "<")) {
+			
+				echo "{$this->oid}{$local_oids[$i]}".PHP_EOL;
+				echo $this->tree[ $local_oids[$i] ]['type'] .PHP_EOL;
+				echo $this->tree[ $local_oids[$i] ]['value'] .PHP_EOL;
 				exit(0);
-				
+
 			}
 
 		}
 
 		// Per RFC, if there is nothing left, respond with NONE
+		echo $this->oid . PHP_EOL;
 		echo "NONE".PHP_EOL;
 		exit(0);
 
@@ -170,22 +159,60 @@ class ZypioSNMP{
 
 		// This checks for a GET/GETNEXT or SET
 		// NOTE: Only GET/GETNEXT is support ATM
-		if( $_SERVER['argv'][1] == "-n" ){
+		if( array_key_exists(1, $_SERVER['argv'])) {
 
-			/*
-			file_put_contents("/var/log/zypiosnmp.log", "Requesting an OID GETNEXT with -n --{$_SERVER['argv'][2]}\n", FILE_APPEND);
-			//*/
+			// Look for getnext
+			if( $_SERVER['argv'][1] == "-n" ){
 
-			$this->getNextOid( $_SERVER['argv'][2] );
+				/*
+				file_put_contents("/var/log/zypiosnmp.log", "Requesting an OID GETNEXT with -n --{$_SERVER['argv'][2]}\n", FILE_APPEND);
+				//*/
 
+				$this->getNextOid( $_SERVER['argv'][2] );
+
+			}
+			// look for GET
+			else if( $_SERVER['argv'][1] == "-g" ){
+
+				/*
+				file_put_contents("/var/log/zypiosnmp.log", "Requesting an OID GET with -g --{$_SERVER['argv'][2]}\n", FILE_APPEND);
+				//*/
+
+				$this->getOid( $_SERVER['argv'][2] );
+
+			}
+		
 		}
-		else if( $_SERVER['argv'][1] == "-g" ){
+		// PASS_PERSIST 
+		else{
+			
+			// Set input blocking to false
+			stream_set_blocking(STDIN, false);
+			while(true){
+				// STDIN
+				$stdin = trim(stream_get_contents( STDIN ));
 
-			/*
-			file_put_contents("/var/log/zypiosnmp.log", "Requesting an OID GET with -g --{$_SERVER['argv'][2]}\n", FILE_APPEND);
-			//*/
+				// If PING is received, respond with PONG
+				if( stristr($stdin, "PING") ) {
 
-			$this->getOid( $_SERVER['argv'][2] );
+					echo "PONG\n";
+
+				}
+
+				// If get is received, respond with oid
+				else if( stristr($stdin, "get") ) {
+
+					$this->getNextOid(explode("\n", $stdin)[1]);
+
+				}
+
+				// If getnext is received, respond with getnext oid
+				else if( stristr($stdin, "getnext") ) {
+
+					$this->getOid(explode("\n", $stdin)[1]);
+
+				}
+			}
 
 		}
 
@@ -195,6 +222,10 @@ class ZypioSNMP{
 
 /**
  * @CHANGELOG
+ *
+ * Version 1.3
+ * 		Added support for pass_persist
+ * 		Added STDIN capture for pass_persist
  * 
  * Version 1.2
  * 		Fixed issue with get next and comparing OID's
