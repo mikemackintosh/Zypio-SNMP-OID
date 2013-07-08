@@ -22,10 +22,13 @@ class ZypioSNMP{
 	const INTEGER = "integer";
 	const STRING = "string";
 	const IPADDR = "ipaddress";
-	const GUAGE = "guage";
-	const COUNTER = "counter";
+	const NETADDR = "NetworkAddress";
+	const GAUGE = "gauge";
+	const COUNTER = "counter64";
 	const TIME = "timeticks";
 	const OBJ = "objectid";
+	const OPAQUE = "opaque";
+
 
 	/**
 	 * Create Class with Base OID
@@ -196,6 +199,8 @@ class ZypioSNMP{
  * Version 1.2
  * 		Fixed issue with get next and comparing OID's
  * 		Added changelog to end of file
+ * 		Fixed mispelled Gauge (from Guage)
+ * 		Added opaque and netaddr as obj def
  * 		
  * Version 1.1
  * 		Moved SNMP cmd to respond method
