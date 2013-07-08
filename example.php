@@ -45,6 +45,8 @@ $snmp->addOid(".7.1.8.0", ZypioSNMP::STRING, "Here is another string"); // .1.3.
 $snmp->addOid(".8.2", ZypioSNMP::GUAGE, rand(0,100)); // .1.3.6.1.4.1.38741.8.2
 $snmp->addOid(".9.2.0", ZypioSNMP::STRING, "unix timestamp"); // .1.3.6.1.4.1.38741.22.1.9.2.0
 $snmp->addOid(".9.2.1", ZypioSNMP::COUNTER, time()); // .1.3.6.1.4.1.38741.22.1.9.2.1
+$snmp->addOid(".9.2.3", ZypioSNMP::STRING, microtime()); // .1.3.6.1.4.1.38741.22.1.9.2.1
+$snmp->addOid(".25.99.99.99.99.99.99.99.1", ZypioSNMP::STRING, "This is 25.99.99...."); // .1.3.6.1.4.1.38741.22.1.9.2.1
 //*/
 
 // Respond

@@ -4,8 +4,8 @@
  * Description ZypioSNMP is used to datafill SNMP OID's
  *             using SNMP's pass functionality
  * Author Mike Mackintosh < m@zyp.io >
- * Date 20130703
- * Version 1.1
+ * Date 20130708
+ * Version 1.2
  *
  * Requires >= PHP5.4
  *
@@ -38,6 +38,7 @@ class ZypioSNMP{
 			$oid = ".{$oid}";
 		}
 
+		// Store base OID locally
 		$this->oid = $oid;
 
 	}
@@ -49,9 +50,9 @@ class ZypioSNMP{
 	 * @param string $type  Your OID type, STRING,Integer, etc
 	 * @param multiple $value The value of your OID
 	 */
-	public function addOid( $oid, $type = STRING, $value= NULL ){
+	public function addOid( $oid, $type = STRING, $value= NULL, $allowed = [] ){
 
-		$this->tree[$oid] = [ 'type' => $type, 'value' => $value ];
+		$this->tree[$oid] = [ 'type' => $type, 'value' => $value, 'allowed' => $allowed ];
 
 		return $this;
 	}
@@ -82,53 +83,37 @@ class ZypioSNMP{
 		$this->tree = array_merge($tree, $this->tree);
 
 		// 
-		$local_oids = $tree;
+		$local_oids = array_reverse($tree);
 
 		// Loop Through now
 		for($i=0;$i<sizeof($local_oids);$i++){
 
-			// You are at the OID Base
-			if(empty($matches[1])){
-				echo "{$this->oid}{$local_oids[0]}".PHP_EOL;
-				echo $this->tree[ $local_oids[0] ]['type'] .PHP_EOL;
-				echo $this->tree[ $local_oids[0] ]['value'] .PHP_EOL;
-				exit(0);
-			}
-			// You are are the request OID, return the next!
-			elseif($local_oids[$i] == $matches[1]){
-				if(array_key_exists($i+1, $local_oids) ){
-					echo "{$this->oid}{$local_oids[$i+1]}".PHP_EOL;
-					echo $this->tree[ $local_oids[$i+1] ]['type'] .PHP_EOL;
-					echo $this->tree[ $local_oids[$i+1] ]['value'] .PHP_EOL;
-					exit(0);
-				}else{
-					break;
-				}
-			}
-
-			// You don't have a diret match, and don't know where you sit
 			/*
-			// @TODO: Support the .7 < .22 factor
-			else{
+			echo "Looking for OID: $local_oids[$i]\n";
+			//*/
 
-				$top_requested_oid = explode(".", $matches[1])[1]; 
-				$top_next_oid = explode(".", $local_oids[$i+1])[1]; 
-				echo $top_requested_oid ." > ". $top_next_oid.PHP_EOL;
-				if( (int) $top_requested_oid < (int) $top_next_oid){
-			 		echo "{$this->oid}{$local_oids[$i]}".PHP_EOL;
-			 		echo $this->tree[ $local_oids[$i] ]['type'] .PHP_EOL;
-			 		echo $this->tree[ $local_oids[$i] ]['value'] .PHP_EOL;
-			 		exit(0);
-				}
-				else if( "".$requested_oid < "{$this->oid}{$local_oids[$i]}" ){ // Unreliabe
-			 		echo "{$this->oid}{$local_oids[$i]}".PHP_EOL;
-			 		echo $this->tree[ $local_oids[$i] ]['type'] .PHP_EOL;
-			 		echo $this->tree[ $local_oids[$i] ]['value'] .PHP_EOL;
-			 		exit(0);
-			 	}
+			if( $requested_oid == $this->oid ){
+				
+				$end = end($local_oids);
 
-		 	}
-		 	//*/
+				echo "{$this->oid}{$end}".PHP_EOL;
+				echo $this->tree[ $end ]['type'] .PHP_EOL;
+				echo $this->tree[ $end ]['value'] .PHP_EOL;
+				exit(0);
+
+			}
+			else if( version_compare( $requested_oid, $this->oid . $local_oids[$i], ">=")) {
+				/*
+				echo "$requested_oid is greater than or equal to ". $this->oid . $local_oids[$i]."\n";
+				echo "We should return ". $this->oid . $local_oids[$i-1]."\n";
+				//*/
+
+				echo "{$this->oid}{$local_oids[$i-1]}".PHP_EOL;
+				echo $this->tree[ $local_oids[$i-1] ]['type'] .PHP_EOL;
+				echo $this->tree[ $local_oids[$i-1] ]['value'] .PHP_EOL;
+				exit(0);
+				
+			}
 
 		}
 
@@ -195,3 +180,18 @@ class ZypioSNMP{
 	}
 
 }
+
+/**
+ * @CHANGELOG
+ * 
+ * Version 1.2
+ * 		Fixed issue with get next and comparing OID's
+ * 		Added changelog to end of file
+ * 		
+ * Version 1.1
+ * 		Moved SNMP cmd to respond method
+ *
+ * Version 1.0
+ *		Initial
+ * 
+ */
