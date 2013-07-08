@@ -103,14 +103,23 @@ class ZypioSNMP{
 
 			}
 			else if( version_compare( $requested_oid, $this->oid . $local_oids[$i], ">=")) {
+
 				/*
 				echo "$requested_oid is greater than or equal to ". $this->oid . $local_oids[$i]."\n";
 				echo "We should return ". $this->oid . $local_oids[$i-1]."\n";
 				//*/
 
-				echo "{$this->oid}{$local_oids[$i-1]}".PHP_EOL;
-				echo $this->tree[ $local_oids[$i-1] ]['type'] .PHP_EOL;
-				echo $this->tree[ $local_oids[$i-1] ]['value'] .PHP_EOL;
+				if( array_key_exists( $i-1 , $local_oids )){
+
+					echo "{$this->oid}{$local_oids[$i-1]}".PHP_EOL;
+					echo $this->tree[ $local_oids[$i-1] ]['type'] .PHP_EOL;
+					echo $this->tree[ $local_oids[$i-1] ]['value'] .PHP_EOL;
+						
+				}
+				else{
+					echo "NONE".PHP_EOL;
+				}
+
 				exit(0);
 				
 			}
