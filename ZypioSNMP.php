@@ -69,17 +69,6 @@ class ZypioSNMP{
 	 */
 	public function getNextOid( $requested_oid ){
 
-		/*
-		file_put_contents("/usr/share/nginx/www/log", "Getting $requested_oid\n", FILE_APPEND);
-		//*/
-		
-		// Get remainder
-		//preg_match("`{$this->oid}(.*)`", $requested_oid , $matches);
-
-		/*
-		file_put_contents("/usr/share/nginx/www/log", "\t$matches[1]\n", FILE_APPEND);
-		//*/
-
 		// Sort Response
 		$tree = array_keys($this->tree);
 		natsort($tree);
@@ -126,20 +115,13 @@ class ZypioSNMP{
 
 	public function getOid( $requested_oid ){
 
-		/*
-		file_put_contents("/usr/share/nginx/www/log", "Getting $requested_oid\n", FILE_APPEND);
-		//*/
-		
 		// Get remainder
 		preg_match("`{$this->oid}(.*)`", $requested_oid , $matches);
 		
 		// Set relative OID
 		$oid = $matches[1];
 
-		/*
-		file_put_contents("/usr/share/nginx/www/log", "\t$matches[1]\n", FILE_APPEND);
-		//*/
-
+		// Check if it exists
 		if( array_key_exists( $oid, $this->tree )){
 	
 				echo "{$requested_oid}".PHP_EOL;
